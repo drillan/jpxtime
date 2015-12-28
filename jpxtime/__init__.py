@@ -16,7 +16,7 @@ http://www.jpx.co.jp/english/derivatives/rules/trading-hours/index.html
 '''
 
 datadir = os.path.dirname(os.path.abspath(__file__))
-cachedays = 180
+cachedays = 365
 ONE_YEAR_TO_SECONDS_365 = 31536000
 ONE_YEAR_TO_SECONDS_245 = 21168000
 ONE_DAY_TO_SECONDS = 86400
@@ -59,14 +59,14 @@ class Session(object):
             id = 5
         if n.opening <= t:
             id = 6
-        name_dict = {0: 'Regular_Session(NS)', 1: 'Closing_Auction(NS)',
+        self.session = {0: 'Regular_Session(NS)', 1: 'Closing_Auction(NS)',
                      2: 'Closed', 3: 'Regular_Session(DS)',
                      4: 'Closing_Auction(DS)',
                      5: 'Closed', 6: 'Regular_Session(NS)'}
-        open_dict = {0: 1, 1: 2, 2: 0, 3: 1, 4: 2, 5: 0, 6: 1}
+        self.open_flag = {0: 1, 1: 2, 2: 0, 3: 1, 4: 2, 5: 0, 6: 1}
         self.session_id = id
-        self.session_name = name_dict[self.session_id]
-        self.is_open = self._is_workingday() * open_dict[self.session_id]
+        self.session_name = self.session[self.session_id]
+        self.is_open = self._is_workingday() * self.open_flag[self.session_id]
         if not self.is_open:
             self.session_name = 'Closed'
 
@@ -227,7 +227,6 @@ class JpHoliday(LoadData):
         res = urllib2.urlopen(URL)
         return yaml.load(res)
 
-    # @classmethod
     def is_calendar_holiday(self, dt):
         SATURDAY = 5
         SUNDAY = 6
@@ -241,7 +240,6 @@ class JpHoliday(LoadData):
 
 
 class JpxHoliday(JpHoliday):
-    # @classmethod
 
     def is_holiday(self, dt):
         jpx_holidays = ((1, 2), (1, 3), (12, 31))

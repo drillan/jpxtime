@@ -1,5 +1,5 @@
 # jpxtime
-manage JPX(Nikkei 225 derivatives) trading hours and trading days
+manage JPX(Nikkei 225 derivatives) trading hours and days
 
 ## Installation
 

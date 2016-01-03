@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='jpxtime',
-    version='0.0.2a2',
+    version='0.0.2',
     packages=find_packages(),
     package_data = {'': ['*cache']},
     description='Japan Exchange Delivatives(Index) trading schedule and trading hours',

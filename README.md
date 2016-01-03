@@ -1,5 +1,5 @@
 # jpxtime
-Japan Exchange Delivatives(Index) trading schedule and trading hours
+manage JPX(Nikkei 225 derivatives) trading hours and trading days
 
 ## Installation
 

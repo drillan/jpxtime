@@ -48,7 +48,7 @@ datetime.date(2016, 1, 8)
 ```
 ```python
 # 年月をstrで指定してSQ日を取得
-jpxtime.get_sq(('201601'))
+jpxtime.get_sq('201601')
 ```
 ```
 datetime.date(2016, 1, 8)

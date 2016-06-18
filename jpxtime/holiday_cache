@@ -4,7 +4,7 @@ p2
 cdatetime
 date
 p3
-(S'\x07\xe0\x06\n'
+(S'\x07\xe1\x06\x12'
 tRp4
 sS'val'
 p5

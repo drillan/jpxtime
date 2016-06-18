@@ -24,26 +24,36 @@ ONE_DAY_TO_SECONDS = 86400
 
 class DaySession(object):
 
-    def __init__(self):
-        self.opening = time(9, 0)
-        self.pre_closing = time(15, 10)
-        self.closing = time(15, 15)
+    def __init__(self, dt):
+        if dt >= datetime(2016, 7, 19):
+            self.opening = time(8, 45)
+            self.pre_closing = time(15, 10)
+            self.closing = time(15, 15)
+        else:
+            self.opening = time(9, 0)
+            self.pre_closing = time(15, 10)
+            self.closing = time(15, 15)
 
 
 class NightSession(object):
 
-    def __init__(self):
-        self.opening = time(16, 30)
-        self.pre_closing = time(2, 55)
-        self.closing = time(3, 0)
+    def __init__(self, dt):
+        if dt >= datetime(2016, 7, 19):
+            self.opening = time(16, 30)
+            self.pre_closing = time(5, 25)
+            self.closing = time(5, 30)
+        else:
+            self.opening = time(16, 30)
+            self.pre_closing = time(2, 55)
+            self.closing = time(3, 0)
 
 
 class Session(object):
 
     def __init__(self, dt):
         self.dt = dt
-        d = DaySession()
-        n = NightSession()
+        d = DaySession(dt)
+        n = NightSession(dt)
         t = dt.time()
         if time(0, 0) <= t <= n.pre_closing:
             id = 0

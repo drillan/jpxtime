@@ -25,27 +25,30 @@ ONE_DAY_TO_SECONDS = 86400
 class DaySession(object):
 
     def __init__(self, dt):
-        if dt >= datetime(2016, 7, 19):
-            self.opening = time(8, 45)
-            self.pre_closing = time(15, 10)
-            self.closing = time(15, 15)
-        else:
-            self.opening = time(9, 0)
-            self.pre_closing = time(15, 10)
-            self.closing = time(15, 15)
+        self.opening = time(9, 0)
+        self.pre_closing = time(15, 10)
+        self.closing = time(15, 15)
 
 
 class NightSession(object):
 
     def __init__(self, dt):
+        self.opening = time(16, 30)
         if dt >= datetime(2016, 7, 19):
-            self.opening = time(16, 30)
             self.pre_closing = time(5, 25)
             self.closing = time(5, 30)
-        else:
-            self.opening = time(16, 30)
+        elif datetime(2011, 7, 19) <= dt < datetime(2016, 7, 19):
             self.pre_closing = time(2, 55)
             self.closing = time(3, 0)
+        elif datetime(2010, 7, 21) <= dt < datetime(2011, 7, 19):
+            self.pre_closing = time(23, 25)
+            self.closing = time(23, 30)
+        elif datetime(2008, 10, 14) <= dt < datetime(2010, 7, 21):
+            self.pre_closing = time(19, 55)
+            self.closing = time(20, 0)
+        elif dt < datetime(2008, 10, 14):
+            self.pre_closing = time(18, 55)
+            self.closing = time(19, 0)
 
 
 class Session(object):
@@ -55,20 +58,39 @@ class Session(object):
         d = DaySession(dt)
         n = NightSession(dt)
         t = dt.time()
-        if time(0, 0) <= t <= n.pre_closing:
-            id = 0
-        if n.pre_closing <= t <= n.closing:
-            id = 1
-        if n.closing < t < d.opening:
-            id = 2
-        if d.opening <= t <= d.pre_closing:
-            id = 3
-        if d.pre_closing <= t <= d.closing:
-            id = 4
-        if d.closing < t < n.opening:
-            id = 5
-        if n.opening <= t:
-            id = 6
+        self.overnight = False
+        if n.closing < d.opening:
+            self.overnight = True
+            if time(0, 0) <= t < n.pre_closing:
+                id = 0
+            elif n.pre_closing <= t <= n.closing:
+                id = 1
+            elif n.closing < t < d.opening:
+                id = 2
+            elif d.opening <= t < d.pre_closing:
+                id = 3
+            elif d.pre_closing <= t <= d.closing:
+                id = 4
+            elif d.closing < t < n.opening:
+                id = 5
+            elif n.opening <= t:
+                id = 6
+        else:
+            if time(0, 0) <= t < d.opening:
+                id = 2
+            elif d.opening <= t < d.pre_closing:
+                id = 3
+            elif d.pre_closing <= t <= d.closing:
+                id = 4
+            elif d.closing < t < n.opening:
+                id = 5
+            elif n.opening <= t < n.pre_closing:
+                id = 0
+            elif n.pre_closing <= t <= n.closing:
+                id = 1
+            elif n.closing < t:
+                id = 2
+
         self.session = {0: 'Regular_Session(NS)', 1: 'Closing_Auction(NS)',
                      2: 'Closed', 3: 'Regular_Session(DS)',
                      4: 'Closing_Auction(DS)',
@@ -83,7 +105,7 @@ class Session(object):
     def _is_workingday(self):
         d = self.dt.date()
         h = JpxHoliday()
-        if self.session_id < 2:
+        if self.overnight and self.session_id < 2:
             d = d - timedelta(days=1)
         return not h.is_holiday(d)
 
